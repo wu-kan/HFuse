@@ -79,4 +79,4 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           push: ${{ github.event_name != 'pull_request' }}
-          file: {context}/scripts/docker/Dockerfile_wuk
+          file: scripts/docker/Dockerfile_wuk
