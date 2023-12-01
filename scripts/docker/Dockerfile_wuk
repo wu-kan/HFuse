@@ -9,7 +9,7 @@ apt-get clean -y
 rm -rf /var/lib/apt/lists/*
 
 . $SCC_SETUP_ENV
-spack install -y --fail-fast llvm@10.0.1%gcc@7.5.0+clang+cuda cuda_arch=61,70,80 ^ cuda@11.5.2
+spack install -y --fail-fast llvm@10.0.1%gcc@7.5.0+clang+cuda~libomptarget cuda_arch=61,70,80 ^ cuda@11.5.2
 spack clean -ab
 
 EOF
