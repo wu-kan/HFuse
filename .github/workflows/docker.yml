@@ -52,7 +52,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           load: true
-          file: {context}/scripts/docker/Dockerfile_wuk
+          file: scripts/docker/Dockerfile_wuk
 
       - name: Run Tests
         run: docker run --rm ${{ steps.meta.outputs.tags }} sh -c ". \$SCC_SETUP_ENV && spack find"
