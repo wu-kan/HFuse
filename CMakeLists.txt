@@ -22,7 +22,7 @@ include_directories(${LLVM_INCLUDE_DIRS})
 include_directories(${CLANG_INCLUDE_DIRS})
 include_directories(include/KernelFuser)
 
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/KernelFuser TYPE INCLUDE)
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/KernelFuser TYPE INCLUDE)
 
 add_subdirectory(lib/KernelFuser)
 
