@@ -211,7 +211,7 @@ void Fuse(int argc, const char **argv,
 
   NArgv[1] = Path.c_str();
   std::vector<std::string> Results;
-  tooling::CommonOptionsParser Op(NArgc, NArgv, KernelFuseCategory);
+  auto Op = tooling::CommonOptionsParser::create(NArgc, NArgv, KernelFuseCategory);
   for (const auto &Preset : Presets) {
     auto SplitStart = 128;
     auto SplitEnd = 0;
@@ -225,7 +225,7 @@ void Fuse(int argc, const char **argv,
       Infos[1].ExecTime = SplitEnd - Split;
       Context C(Infos, Preset.first, Preset.second + "_idx_" +
           std::to_string(Split / SplitStart - 1));
-      FuseInstance I(Op, C);
+      FuseInstance I(Op.get(), C);
       I.expandMacros();
       I.renameParameters();
       I.rewriteThreadInfo();

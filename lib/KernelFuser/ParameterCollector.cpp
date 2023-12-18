@@ -41,7 +41,7 @@ void ParameterCollector::run(
       VisitedDecl.insert(Stmt->getBeginLoc().getRawEncoding());
       for (auto Decl: Stmt->decls()) {
         if (auto VD = dyn_cast<VarDecl>(Decl)) {
-          ParameterList.push_back(VD->getName());
+          ParameterList.push_back(VD->getName().str());
           USRList.push_back(
               tooling::getUSRsForDeclaration(VD->getUnderlyingDecl(), *Result.Context)
               );

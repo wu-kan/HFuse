@@ -19,3 +19,4 @@ target_link_libraries(LLVMKernelFuser
         clangTooling
         clangToolingCore
         clangToolingRefactoring)
+install(TARGETS LLVMKernelFuser)

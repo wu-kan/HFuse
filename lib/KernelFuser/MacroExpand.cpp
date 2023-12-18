@@ -7,7 +7,7 @@ void MacroExpand::run(const ast_matchers::MatchFinder::MatchResult &Result) {
 
   const auto *D = Result.Nodes.getNodeAs<FunctionDecl>(KernelFuseBindId);
   if (D->isTemplateInstantiation() ||
-      !Context.hasKernel(D->getName())) return;
+      !Context.hasKernel(D->getName().str())) return;
   std::string Impl;
   llvm::raw_string_ostream ImplStream(Impl);
   auto *Body = D->getBody();
