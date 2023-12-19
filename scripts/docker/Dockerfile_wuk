@@ -16,7 +16,9 @@ rm -rf /var/lib/apt/lists/*
 spack install -y --fail-fast cuda@12.2.1%gcc@7.5.0
 spack clean -ab
 spack install -y --fail-fast cmake@3.27.7%gcc@7.5.0
+spack clean -ab
 spack install -y --fail-fast ninja@1.11.1%gcc@7.5.0
+spack clean -ab
 spack install -y --fail-fast llvm@17.0.4%gcc@7.5.0+clang~libomptarget targets=nvptx
 spack clean -ab
 
@@ -24,6 +26,8 @@ spack load cmake@3.27.7%gcc@7.5.0
 spack load ninja@1.11.1%gcc@7.5.0
 spack load llvm@17.0.4%gcc@7.5.0+clang~libomptarget targets=nvptx
 spack load cuda@12.2.1%gcc@7.5.0
+
+spack find --loaded
 
 rm -rf ${WUK_INSTALL_PREFIX}
 cmake -G Ninja \\
