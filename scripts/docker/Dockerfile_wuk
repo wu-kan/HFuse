@@ -14,13 +14,15 @@ rm -rf /var/lib/apt/lists/*
 
 . $SCC_SETUP_ENV
 spack install -y --fail-fast cuda@12.2.1%gcc@7.5.0
-spack clean -ab
+spack clean -a
 spack install -y --fail-fast cmake@3.27.7%gcc@7.5.0
-spack clean -ab
+spack clean -a
 spack install -y --fail-fast ninja@1.11.1%gcc@7.5.0
-spack clean -ab
+spack clean -a
 spack install -y --fail-fast llvm@17.0.4%gcc@7.5.0+clang~libomptarget targets=nvptx
 spack clean -ab
+
+spack find
 
 spack load cmake@3.27.7%gcc@7.5.0
 spack load ninja@1.11.1%gcc@7.5.0
@@ -36,7 +38,8 @@ cmake -G Ninja \\
     -DCMAKE_CXX_COMPILER=clang++ \\
     -DCMAKE_PREFIX_PATH="$(llvm-config --cmakedir);$(llvm-config --cmakedir)../clang" \\
     -DCMAKE_INSTALL_PREFIX=${WUK_INSTALL_PREFIX} \\
-    -B ${WUK_INSTALL_PREFIX}/build
+    -B ${WUK_INSTALL_PREFIX}/build \\
+    -S /workspace/HFuse
 cmake --build ${WUK_INSTALL_PREFIX}/build -j
 cmake --build ${WUK_INSTALL_PREFIX}/build -t install
 
