@@ -8,38 +8,42 @@ RUN <<EOF
 
 apt-get update -y
 apt-get upgrade -y
+
+apt-get install -y --no-install-recommends \
+  clang llvm-dev zlib1g-dev libzstd-dev \
+  cmake ninja-build
 apt-get autoremove -y
 apt-get clean -y
 rm -rf /var/lib/apt/lists/*
 
 . $SCC_SETUP_ENV
-spack install -y --fail-fast cuda@12.2.1%gcc@7.5.0
-spack clean -a
-spack install -y --fail-fast cmake@3.27.7%gcc@7.5.0
-spack clean -a
-spack install -y --fail-fast ninja@1.11.1%gcc@7.5.0
-spack clean -a
-spack install -y --fail-fast llvm@17.0.4%gcc@7.5.0+clang~libomptarget targets=nvptx
-spack clean -ab
+# spack install -y --fail-fast cuda@12.2.1%gcc@7.5.0
+# spack clean -a
+# spack install -y --fail-fast cmake@3.27.7%gcc@7.5.0
+# spack clean -a
+# spack install -y --fail-fast ninja@1.11.1%gcc@7.5.0
+# spack clean -a
+# spack install -y --fail-fast llvm@17.0.4%gcc@7.5.0+clang~libomptarget targets=nvptx
+# spack clean -ab
 
 spack find
 
-spack load cmake@3.27.7%gcc@7.5.0
-spack load ninja@1.11.1%gcc@7.5.0
-spack load llvm@17.0.4%gcc@7.5.0+clang~libomptarget targets=nvptx
-spack load cuda@12.2.1%gcc@7.5.0
+# spack load cmake@3.27.7%gcc@7.5.0
+# spack load ninja@1.11.1%gcc@7.5.0
+# spack load llvm@17.0.4%gcc@7.5.0+clang~libomptarget targets=nvptx
+# spack load cuda@12.2.1%gcc@7.5.0
 
 spack find --loaded
 
 rm -rf ${WUK_INSTALL_PREFIX}
+cd /workspace/HFuse
 cmake -G Ninja \\
     -DCMAKE_BUILD_TYPE=RelWithDebInfo \\
     -DCMAKE_C_COMPILER=clang \\
     -DCMAKE_CXX_COMPILER=clang++ \\
     -DCMAKE_PREFIX_PATH="$(llvm-config --cmakedir);$(llvm-config --cmakedir)../clang" \\
     -DCMAKE_INSTALL_PREFIX=${WUK_INSTALL_PREFIX} \\
-    -B ${WUK_INSTALL_PREFIX}/build \\
-    -S /workspace/HFuse
+    -B ${WUK_INSTALL_PREFIX}/build
 cmake --build ${WUK_INSTALL_PREFIX}/build -j
 cmake --build ${WUK_INSTALL_PREFIX}/build -t install
 
