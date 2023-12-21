@@ -8,23 +8,19 @@ RUN <<EOF
 
 apt-get update -y
 apt-get upgrade -y
-
-apt-get install -y --no-install-recommends \
-  clang llvm-dev zlib1g-dev libzstd-dev \
-  cmake ninja-build
 apt-get autoremove -y
 apt-get clean -y
 rm -rf /var/lib/apt/lists/*
 
 . $SCC_SETUP_ENV
-# spack install -y --fail-fast cuda@12.2.1%gcc@7.5.0
-# spack clean -a
-# spack install -y --fail-fast cmake@3.27.7%gcc@7.5.0
-# spack clean -a
-# spack install -y --fail-fast ninja@1.11.1%gcc@7.5.0
-# spack clean -a
-# spack install -y --fail-fast llvm@17.0.4%gcc@7.5.0+clang~libomptarget targets=nvptx
-# spack clean -ab
+spack install -y --fail-fast cuda@12.3.0%gcc@7.5.0
+spack clean -a
+spack install -y --fail-fast cmake@3.27.7%gcc@7.5.0
+spack clean -a
+spack install -y --fail-fast ninja@1.11.1%gcc@7.5.0
+spack clean -a
+spack install -y --fail-fast llvm@17.0.4%gcc@7.5.0+clang~libomptarget targets=nvptx
+spack clean -ab
 
 spack find
 
