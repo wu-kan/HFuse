@@ -37,12 +37,12 @@ spack find --loaded
 
 rm -rf ${WUK_INSTALL_PREFIX}
 cd /workspace/HFuse
-cmake -G Ninja \\
-    -DCMAKE_BUILD_TYPE=RelWithDebInfo \\
-    -DCMAKE_C_COMPILER=clang \\
-    -DCMAKE_CXX_COMPILER=clang++ \\
-    -DCMAKE_PREFIX_PATH="$(llvm-config --cmakedir);$(llvm-config --cmakedir)../clang" \\
-    -DCMAKE_INSTALL_PREFIX=${WUK_INSTALL_PREFIX} \\
+cmake -G Ninja \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+    -DCMAKE_C_COMPILER=clang \
+    -DCMAKE_CXX_COMPILER=clang++ \
+    -DCMAKE_PREFIX_PATH="$(llvm-config --cmakedir);$(llvm-config --cmakedir)../clang" \
+    -DCMAKE_INSTALL_PREFIX=${WUK_INSTALL_PREFIX} \
     -B ${WUK_INSTALL_PREFIX}/build
 cmake --build ${WUK_INSTALL_PREFIX}/build -j
 cmake --build ${WUK_INSTALL_PREFIX}/build -t install
