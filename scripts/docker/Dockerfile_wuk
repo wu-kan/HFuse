@@ -2,7 +2,7 @@
 FROM wukan0621/sccenv
 WORKDIR /workspace
 VOLUME /workspace
-ARG WUK_INSTALL_PREFIX=/workspace/HFuse-build
+ARG WUK_INSTALL_PREFIX=/workspace/HFuse_build
 COPY . /workspace/HFuse/
 RUN <<EOF
 
@@ -13,21 +13,18 @@ apt-get clean -y
 rm -rf /var/lib/apt/lists/*
 
 . $SCC_SETUP_ENV
-spack install -y --fail-fast cuda@12.3.0%gcc@7.5.0 target=$(arch)
+spack install -y --fail-fast cmake@3.27.7%$SCC_DEFAULT_COMPILER target=$(arch)
 spack clean -a
-spack install -y --fail-fast cmake@3.27.7%gcc@7.5.0 target=$(arch)
+spack install -y --fail-fast ninja@1.11.1%$SCC_DEFAULT_COMPILER target=$(arch)
 spack clean -a
-spack install -y --fail-fast ninja@1.11.1%gcc@7.5.0 target=$(arch)
-spack clean -a
-spack install -y --fail-fast llvm@17.0.4%gcc@7.5.0+clang~libomptarget targets=nvptx target=$(arch)
+spack install -y --fail-fast llvm@17.0.4%$SCC_DEFAULT_COMPILER+clang~libomptarget targets=nvptx target=$(arch)
 spack clean -ab
 
 spack find
 
-spack load cmake@3.27.7%gcc@7.5.0
-spack load ninja@1.11.1%gcc@7.5.0
-spack load llvm@17.0.4%gcc@7.5.0+clang~libomptarget targets=nvptx
-spack load cuda@12.3.0%gcc@7.5.0
+spack load cmake@3.27.7%$SCC_DEFAULT_COMPILER
+spack load ninja@1.11.1%$SCC_DEFAULT_COMPILER
+spack load llvm@17.0.4%$SCC_DEFAULT_COMPILER+clang~libomptarget targets=nvptx
 
 spack find --loaded
 
