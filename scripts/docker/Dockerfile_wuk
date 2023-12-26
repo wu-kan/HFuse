@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.4
-FROM wukan0621/sccenv
+FROM ubuntu:noble
 WORKDIR /workspace
 VOLUME /workspace
 ARG WUK_INSTALL_PREFIX=/workspace/HFuse_build
@@ -8,25 +8,11 @@ RUN <<EOF
 
 apt-get update -y
 apt-get upgrade -y
+apt-get install --no-install-recommends -y \
+    clang llvm-dev libclang-dev cmake ninja-build
 apt-get autoremove -y
 apt-get clean -y
 rm -rf /var/lib/apt/lists/*
-
-. $SCC_SETUP_ENV
-spack install -y --fail-fast cmake@3.27.7%$SCC_DEFAULT_COMPILER target=$(arch)
-spack clean -a
-spack install -y --fail-fast ninja@1.11.1%$SCC_DEFAULT_COMPILER target=$(arch)
-spack clean -a
-spack install -y --fail-fast llvm@17.0.4%$SCC_DEFAULT_COMPILER+clang~libomptarget targets=nvptx target=$(arch)
-spack clean -ab
-
-spack find
-
-spack load cmake@3.27.7%$SCC_DEFAULT_COMPILER
-spack load ninja@1.11.1%$SCC_DEFAULT_COMPILER
-spack load llvm@17.0.4%$SCC_DEFAULT_COMPILER+clang~libomptarget targets=nvptx
-
-spack find --loaded
 
 rm -rf ${WUK_INSTALL_PREFIX}
 cd /workspace/HFuse
