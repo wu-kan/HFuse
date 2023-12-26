@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.4
-FROM ubuntu:noble # nvidia/cuda:12.3.1-devel-ubuntu24.04
+FROM ubuntu:noble # nvidia/cuda:12.3.0-devel-ubuntu24.04
 WORKDIR /workspace
 VOLUME /workspace
 ARG WUK_INSTALL_PREFIX=/workspace/HFuse_build
