@@ -1,34 +1,40 @@
 # syntax=docker/dockerfile:1.4
 # FROM nvidia/cuda:12.3.0-devel-ubuntu24.04
 FROM ubuntu:noble
-WORKDIR /workspace
-VOLUME /workspace
-ARG WUK_INSTALL_PREFIX=/workspace/HFuse_build
-ARG SCC_OPT=/workspace
+WORKDIR /opt
+VOLUME /opt
+ARG WUK_INSTALL_PREFIX=/opt/HFuse_build
+ARG SCC_OPT=/opt
 ENV SCC_SETUP_ENV=${SCC_OPT}/sysu-scc-spack-repo/share/sysu-scc-spack-repo/setup-env.sh
-COPY . /workspace/HFuse/
+COPY . /opt/HFuse/
 RUN <<EOF
 
 apt-get update -y
 apt-get upgrade -y
 apt-get install --no-install-recommends -y \
-    python3 patch tar gzip unzip bzip2 xz-utils \
-    file git ca-certificates make bash \
-    clang llvm-dev libclang-dev cmake ninja-build
+  python3 patch tar gzip bzip2 xz-utils \
+  file ca-certificates make bash git \
+  clang llvm-dev libclang-dev cmake ninja-build zlib1g-dev libzstd-dev \
+  libantlr4-runtime-dev default-jre-headless pkg-config uuid-dev \
+  python3-pip python3-cairosvg
+
+python3 -m pip install --user --break-system-packages \
+  altair vl-convert-python
+
 apt-get autoremove -y
 apt-get clean -y
 rm -rf /var/lib/apt/lists/*
 
 cd ${SCC_OPT}
 git clone --depth=1 https://github.com/SYSU-SCC/sysu-scc-spack-repo
-bash $(dirname $SCC_SETUP_ENV)/init-env.sh v0.21.0
+bash $(dirname $SCC_SETUP_ENV)/init-env.sh v0.21.1
 . ${SCC_SETUP_ENV}
 spack install -y --fail-fast cuda@12.3.0%clang target=$(arch)
 spack gc -y
 spack clean -ab
 
 rm -rf ${WUK_INSTALL_PREFIX}
-cd /workspace/HFuse
+cd /opt/HFuse
 cmake -G Ninja \
     -DCMAKE_BUILD_TYPE=RelWithDebInfo \
     -DCMAKE_C_COMPILER=clang \
