@@ -18,7 +18,7 @@ apt-get install --no-install-recommends -y \
   libantlr4-runtime-dev default-jre-headless pkg-config uuid-dev \
   python3-pip python3-cairosvg
 
-python3 -m pip install --user --break-system-packages \
+python3 -m pip install --no-cache-dir --user --break-system-packages \
   altair vl-convert-python
 
 apt-get autoremove -y
