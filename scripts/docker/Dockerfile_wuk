@@ -4,10 +4,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 ARG ANTLR_VERSION=4.9
 ADD https://www.antlr.org/download/antlr-${ANTLR_VERSION}-complete.jar /root
 ENV ANTLR4_JAR_LOCATION=/root/antlr-${ANTLR_VERSION}-complete.jar
-ARG WUK_SOURCE_DIR=/root/HFuse
-ARG WUK_INSTALL_PREFIX=/root/HFuse_install
 ENV SCC_SETUP_ENV=/root/sysu-scc-spack-repo/share/sysu-scc-spack-repo/setup-env.sh
-ADD . ${WUK_SOURCE_DIR}
 RUN <<EOF
 
 apt-get update -y
@@ -29,13 +26,17 @@ spack buildcache install --otherarch "cmake@3.27.7%gcc@11.4.0 arch=linux-ubuntu2
 spack mirror add develop-2023-12-17 https://binaries.spack.io/develop-2023-12-17
 spack buildcache keys --install --trust
 spack buildcache install --otherarch "llvm@17.0.0:%gcc@11.1.0+clang targets=all arch=linux-ubuntu20.04-x86_64_v3"
-spack compiler add --scope=site $(spack location -i "llvm@17.0.0:%gcc@11.1.0+clang targets=all arch=linux-ubuntu20.04-x86_64_v3")
+spack compiler add --scope=site $(spack location -i llvm)
 EOF
+ARG WUK_SOURCE_DIR=/root/HFuse
+ARG WUK_INSTALL_PREFIX=/root/HFuse_install
+ADD . ${WUK_SOURCE_DIR}
 RUN <<EOF
 rm -rf ${WUK_INSTALL_PREFIX}
 cd ${WUK_SOURCE_DIR}
 . ${SCC_SETUP_ENV}
-spack load cmake llvm
+spack load cmake
+spack load llvm
 cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
     -DCMAKE_C_COMPILER=clang \
     -DCMAKE_CXX_COMPILER=clang++ \
