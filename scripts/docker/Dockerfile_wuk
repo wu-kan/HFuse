@@ -28,8 +28,8 @@ bash $(dirname $SCC_SETUP_ENV)/init-env.sh v0.21.1
 spack buildcache install --otherarch "cmake@3.27.7%gcc@11.4.0 arch=linux-ubuntu22.04-x86_64_v3"
 spack mirror add develop-2023-12-17 https://binaries.spack.io/develop-2023-12-17
 spack buildcache keys --install --trust
-spack buildcache install --otherarch "llvm@17.0.0:%gcc@11.1.0:+clang targets=all arch=linux-ubuntu20.04-x86_64_v3"
-spack compiler add --scope=site $(spack location -i "llvm@17.0.0:%gcc@11.1.0:+clang targets=all arch=linux-ubuntu20.04-x86_64_v3")
+spack buildcache install --otherarch "llvm@17.0.0:%gcc@11.1.0+clang targets=all arch=linux-ubuntu20.04-x86_64_v3"
+spack compiler add --scope=site $(spack location -i "llvm@17.0.0:%gcc@11.1.0+clang targets=all arch=linux-ubuntu20.04-x86_64_v3")
 EOF
 RUN <<EOF
 rm -rf ${WUK_INSTALL_PREFIX}
