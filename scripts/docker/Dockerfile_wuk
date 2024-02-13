@@ -1,42 +1,42 @@
 # syntax=docker/dockerfile:1.4
-# FROM nvidia/cuda:12.3.0-devel-ubuntu24.04
-FROM ubuntu:noble
-WORKDIR /opt
-VOLUME /opt
-ARG WUK_INSTALL_PREFIX=/opt/HFuse_build
-ARG SCC_OPT=/opt
-ENV SCC_SETUP_ENV=${SCC_OPT}/sysu-scc-spack-repo/share/sysu-scc-spack-repo/setup-env.sh
-COPY . /opt/HFuse/
+FROM nvidia/cuda:12.3.1-devel-ubuntu22.04
+ARG DEBIAN_FRONTEND=noninteractive
+ARG ANTLR_VERSION=4.9
+ADD https://www.antlr.org/download/antlr-${ANTLR_VERSION}-complete.jar /root
+ENV ANTLR4_JAR_LOCATION=/root/antlr-${ANTLR_VERSION}-complete.jar
+ARG WUK_SOURCE_DIR=/root/HFuse
+ARG WUK_INSTALL_PREFIX=/root/HFuse_install
+ENV SCC_SETUP_ENV=/root/sysu-scc-spack-repo/share/sysu-scc-spack-repo/setup-env.sh
+ADD . ${WUK_SOURCE_DIR}
 RUN <<EOF
 
 apt-get update -y
-apt-get upgrade -y
+# apt-get upgrade -y
 apt-get install --no-install-recommends -y \
-  python3 patch tar gzip bzip2 xz-utils \
-  file ca-certificates make bash git \
-  clang llvm-dev libclang-dev cmake ninja-build zlib1g-dev libzstd-dev \
-  libantlr4-runtime-dev default-jre-headless pkg-config uuid-dev \
-  python3-pip python3-cairosvg
-
-python3 -m pip install --no-cache-dir --user --break-system-packages \
-  altair vl-convert-python
+  git python3 patch tar gzip bzip2 xz-utils \
+  file ca-certificates make bash binutils libstdc++-9-dev \
+  python3-altair libantlr4-runtime-dev default-jre-headless pkg-config uuid-dev
 
 apt-get autoremove -y
 apt-get clean -y
 rm -rf /var/lib/apt/lists/*
 
-cd ${SCC_OPT}
-git clone --depth=1 https://github.com/SYSU-SCC/sysu-scc-spack-repo
+cd /root
+git clone https://github.com/SYSU-SCC/sysu-scc-spack-repo
 bash $(dirname $SCC_SETUP_ENV)/init-env.sh v0.21.1
 . ${SCC_SETUP_ENV}
-spack install -y --fail-fast cuda@12.3.0%clang target=$(arch)
-spack gc -y
-spack clean -ab
-
+spack buildcache install --otherarch "cmake@3.27.7%gcc@11.4.0 arch=linux-ubuntu22.04-x86_64_v3"
+spack mirror add develop-2023-12-17 https://binaries.spack.io/develop-2023-12-17
+spack buildcache keys --install --trust
+spack buildcache install --otherarch "llvm@17.0.0:%gcc@11.1.0:+clang targets=all arch=linux-ubuntu20.04-x86_64_v3"
+spack compiler add --scope=site $(spack location -i "llvm@17.0.0:%gcc@11.1.0:+clang targets=all arch=linux-ubuntu20.04-x86_64_v3")
+EOF
+RUN <<EOF
 rm -rf ${WUK_INSTALL_PREFIX}
-cd /opt/HFuse
-cmake -G Ninja \
-    -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+cd ${WUK_SOURCE_DIR}
+. ${SCC_SETUP_ENV}
+spack load cmake llvm
+cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
     -DCMAKE_C_COMPILER=clang \
     -DCMAKE_CXX_COMPILER=clang++ \
     -DCMAKE_PREFIX_PATH="$(llvm-config --cmakedir);$(llvm-config --cmakedir)../clang" \
